@@ -55,6 +55,10 @@ class LogicalMap(object):
                 return 1
         return float('inf')
 
+    def neighbours(self, tile):
+        return [Vec2d(i, j) for i in range(tile.x-1, tile.x+2) for j in range(tile.y-1, tile.y+2)
+            if (Vec2d(i, j) != tile and self.is_traversable(Vec2d(i, j)))]
+
     def __getitem__(self, item):
         if isinstance(item, Vec2d):
             r = item.x

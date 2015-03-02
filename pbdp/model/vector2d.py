@@ -39,6 +39,13 @@ class Vec2d(object):
         else:
             return True
 
+    def __lt__(self, other):
+        # Redefine lt because of heappush.
+        return self.tuple < other.tuple
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
     def __nonzero__(self):
         return bool(self.x or self.y)
 
@@ -63,6 +70,10 @@ class Vec2d(object):
     @property
     def magnitude(self):
         return (self.x ** 2 + self.y ** 2) ** 0.5
+
+    @property
+    def tuple(self):
+        return (self.x, self.y)
 
     def is_diagonal_to(self, other):
         return fabs((self - other).x) == 1 and fabs((self - other).y) == 1
