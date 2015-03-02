@@ -7,5 +7,6 @@ setup(
     url='',
     license='MIT',
     author='Davide Aversa',
-    description='Test suite for Continuous BDP'
+    description='Test suite for Continuous BDP',
+    test_suite='nose.collector',
 )

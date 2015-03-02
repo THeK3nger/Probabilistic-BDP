@@ -8,7 +8,7 @@ __author__ = 'davide'
 class TestLogicalMap(TestCase):
 
     def setUp(self):
-        self.testing_map = LogicalMap("../maps/arena.map")
+        self.testing_map = LogicalMap("./maps/arena.map")
 
     def test_cost(self):
         self.assertEqual(self.testing_map.cost(Vec2d(5, 5), Vec2d(6, 5)), 1)
