@@ -1,6 +1,6 @@
 from unittest import TestCase
-from cbdp.model.map import LogicalMap
-from cbdp.model.vector2d import Vec2d
+from pbdp.model.map import LogicalMap
+from pbdp.model.vector2d import Vec2d
 
 __author__ = 'davide'
 

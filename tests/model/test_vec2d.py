@@ -1,7 +1,7 @@
 from unittest import TestCase
 from random import randint
 
-from cbdp.model.vector2d import Vec2d
+from pbdp.model.vector2d import Vec2d
 
 
 class TestVec2d(TestCase):

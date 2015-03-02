@@ -2,7 +2,7 @@ __author__ = 'davide'
 
 import math
 
-from cbdp.model.vector2d import Vec2d
+from pbdp.model.vector2d import Vec2d
 
 
 class LogicalMap(object):
