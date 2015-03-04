@@ -13,7 +13,8 @@ class TestUniformAbstraction(TestCase):
 
     def test_generate(self):
         self.abstraction.generate()
-        self.assertTrue(True)
+        self.assertTrue(True)  # TODO: I don't know to write an easy test.
+
 
     def test__sector_from_tile(self):
         self.assertEqual(self.abstraction._sector_from_tile(Vec2d(0, 0)), 0)
@@ -27,4 +28,4 @@ class TestUniformAbstraction(TestCase):
 
     def test__identify_region(self):
         self.abstraction._identify_region(self.abstraction._sector_from_tile(Vec2d(15, 15)))
-        self.assertTrue(True)
+        self.assertTrue(True)  # TODO: I don't know to write an easy test.

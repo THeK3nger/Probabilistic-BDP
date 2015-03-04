@@ -3,13 +3,38 @@ Collection of algorithms to generate a graph abstraction over a LogicalMap.
 """
 
 import math
+import collections
+import random
 
 from pbdp.model.map import LogicalMap
 from pbdp.model.vector2d import Vec2d
 from pbdp.search import astar
 
+# Node = a tile.
+
+class Edge(object):
+    """
+    Graph Edge
+    """
+
+    def __init__(self, node_a, node_b, metadata):
+        self.pair = (node_a, node_b)
+        self.metadata = metadata
+
+    def __eq__(self, other):
+        return self.pair == other.pair
+
+    def __hash__(self):
+        return hash(self.pair)
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return "E({},{})".format(self.pair[0], self.pair[1])
 
 class UniformAbstraction(object):
+
     def __init__(self, original_map, fraction):
         """
 
@@ -24,16 +49,66 @@ class UniformAbstraction(object):
         self.width = math.ceil(original_map.width / self.gridsize)
         self.height = math.ceil(original_map.height / self.gridsize)
         self.regions_map = [[0 for _ in range(original_map.width)] for _ in range(original_map.height)]
+        self.id_to_tile = {}
+        self.edges = set([])
 
     def generate(self):
         # 1. Identify Sectors (sectors are set of tiles in the abstract grid).
 
         # 2. Identify Regions (regions are fully connected set of tiles in a sector).
-        for s in range(self.width*self.height):
+        for s in self.sectors():
             self._identify_region(s)
 
+        # 2.1 For each region in sector add a node.
+        self._register_regions()
+
         # 3. Identify edges between Regions.
+        self._find_edges()
+
+        print(self.edges)
+
+        # Test Print
         self._pretty_print()
+
+    def sectors(self):
+        for s in range(self.width*self.height):
+            yield s
+
+    def _find_edges(self):
+        # 3.1 Connect Vertical Edges
+        for column_raw in range(1, self.width - 1):
+            col = column_raw * self.gridsize - 1
+            for row in range(self.original_map.height):
+                if self.regions_map[row][col + 1] == 0 or self.regions_map[row][col] == 0:
+                    continue
+                t1 = self.id_to_tile[self._id_from_tile((row, col + 1))]
+                t2 = self.id_to_tile[self._id_from_tile((row, col))]
+                self.edges.add(Edge(t1, t2, None))
+
+        # 3.1 Connect Horizontal Edges
+        for row_raw in range(1, self.height - 1):
+            row = row_raw * self.gridsize - 1
+            for col in range(self.original_map.width):
+                if self.regions_map[row][col] == 0 or self.regions_map[row + 1][col] == 0:
+                    continue
+                t1 = self.id_to_tile[self._id_from_tile((row + 1, col))]
+                t2 = self.id_to_tile[self._id_from_tile((row, col))]
+                self.edges.add(Edge(t1, t2, None))
+
+    def _get_region(self, tile):
+        return self.regions_map[tile[0]][tile[1]]
+
+    def _register_regions(self):
+        for s in self.sectors():
+            labels_in_sector = set([self._get_region(t) for t in self._tiles_in_sector(s)])
+            # Remove 0 if present.
+            if 0 in labels_in_sector:
+                labels_in_sector.remove(0)
+            while len(labels_in_sector) != 0:
+                label = labels_in_sector.pop()
+                # Take a random tile with label.
+                tile = random.choice([t for t in self._tiles_in_sector(s) if self._get_region(t) == label])
+                self.id_to_tile[self._id_from_tile(tile)] = tile
 
     def _pretty_print(self):
         print('\n'.join([''.join(map(lambda x: str(x), row)) for row in self.regions_map]))
@@ -44,7 +119,13 @@ class UniformAbstraction(object):
         :type tile: Vec2d
         :return:
         """
+        if not isinstance(tile, Vec2d):
+            tile = Vec2d(tile)
         return math.floor(tile.y / self.gridsize) + self.width * math.floor(tile.x / self.gridsize)
+
+    def _id_from_tile(self, tile):
+        sector = self._sector_from_tile(tile)
+        return "{}-{}".format(sector, self._get_region(tile))
 
     def _sector_to_rect(self, sector):
         sector_row = math.floor(sector / self.width)
@@ -87,7 +168,7 @@ class UniformAbstraction(object):
                     label_eq.union(nextLabel)
                     nextLabel += 1
                 else:
-                    labels = [self.regions_map[n[0]][n[1]] for n in neighs]
+                    labels = [self._get_region(n) for n in neighs]
                     self.regions_map[r][c] = min(labels)
                     for l in labels:
                         label_eq.union(l, min(labels))
