@@ -8,6 +8,7 @@ import random
 
 from pbdp.model.map import LogicalMap
 from pbdp.model.vector2d import Vec2d
+from pbdp.collections.graph import MultiGraph
 from pbdp.search import astar
 
 # Node = a tile.
@@ -50,7 +51,7 @@ class UniformAbstraction(object):
         self.height = math.ceil(original_map.height / self.gridsize)
         self.regions_map = [[0 for _ in range(original_map.width)] for _ in range(original_map.height)]
         self.id_to_tile = {}
-        self.edges = set([])
+        self.abstraction_graph = MultiGraph()
 
     def generate(self):
         # 1. Identify Sectors (sectors are set of tiles in the abstract grid).
@@ -64,8 +65,6 @@ class UniformAbstraction(object):
 
         # 3. Identify edges between Regions.
         self._find_edges()
-
-        print(self.edges)
 
         # Test Print
         self._pretty_print()
@@ -81,9 +80,11 @@ class UniformAbstraction(object):
             for row in range(self.original_map.height):
                 if self.regions_map[row][col + 1] == 0 or self.regions_map[row][col] == 0:
                     continue
-                t1 = self.id_to_tile[self._id_from_tile((row, col + 1))]
-                t2 = self.id_to_tile[self._id_from_tile((row, col))]
-                self.edges.add(Edge(t1, t2, None))
+                id1 = self._id_from_tile((row, col+1))
+                id2 = self._id_from_tile((row, col))
+                # t1 = self.id_to_tile[id1]
+                # t2 = self.id_to_tile[id2]
+                self.abstraction_graph.add_edge(id1, id2)
 
         # 3.1 Connect Horizontal Edges
         for row_raw in range(1, self.height - 1):
@@ -91,9 +92,11 @@ class UniformAbstraction(object):
             for col in range(self.original_map.width):
                 if self.regions_map[row][col] == 0 or self.regions_map[row + 1][col] == 0:
                     continue
-                t1 = self.id_to_tile[self._id_from_tile((row + 1, col))]
-                t2 = self.id_to_tile[self._id_from_tile((row, col))]
-                self.edges.add(Edge(t1, t2, None))
+                id1 = self._id_from_tile((row + 1, col))
+                id2 = self._id_from_tile((row, col))
+                # t1 = self.id_to_tile[id1]
+                # t2 = self.id_to_tile[id2]
+                self.abstraction_graph.add_edge(id1, id2)
 
     def _get_region(self, tile):
         return self.regions_map[tile[0]][tile[1]]
@@ -109,6 +112,8 @@ class UniformAbstraction(object):
                 # Take a random tile with label.
                 tile = random.choice([t for t in self._tiles_in_sector(s) if self._get_region(t) == label])
                 self.id_to_tile[self._id_from_tile(tile)] = tile
+                # Add node to graph.
+                self.abstraction_graph.add_node(self._id_from_tile(tile))
 
     def _pretty_print(self):
         print('\n'.join([''.join(map(lambda x: str(x), row)) for row in self.regions_map]))
