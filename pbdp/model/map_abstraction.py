@@ -2,13 +2,16 @@
 Collection of algorithms to generate a graph abstraction over a LogicalMap.
 """
 
+# DEPRECATED
+# This class is not suitable for the problem so it have to be removed.
+
 import math
 import collections
 import random
 
-from pbdp.model.map import LogicalMap
+from pbdp.model.map import LogicalMap, distance_euclidean
 from pbdp.model.vector2d import Vec2d
-from pbdp.collections.graph import MultiGraph
+from pbdp.collections.graph import Graph
 from pbdp.search import astar
 
 # Node = a tile.
@@ -51,7 +54,7 @@ class UniformAbstraction(object):
         self.height = math.ceil(original_map.height / self.gridsize)
         self.regions_map = [[0 for _ in range(original_map.width)] for _ in range(original_map.height)]
         self.id_to_tile = {}
-        self.abstraction_graph = MultiGraph()
+        self.abstraction_graph = Graph()
 
     def generate(self):
         # 1. Identify Sectors (sectors are set of tiles in the abstract grid).
@@ -73,6 +76,10 @@ class UniformAbstraction(object):
         for s in range(self.width*self.height):
             yield s
 
+    def neighbours(self, node):
+        return self.gra
+
+
     def _find_edges(self):
         # 3.1 Connect Vertical Edges
         for column_raw in range(1, self.width - 1):
@@ -82,9 +89,9 @@ class UniformAbstraction(object):
                     continue
                 id1 = self._id_from_tile((row, col+1))
                 id2 = self._id_from_tile((row, col))
-                # t1 = self.id_to_tile[id1]
-                # t2 = self.id_to_tile[id2]
-                self.abstraction_graph.add_edge(id1, id2)
+                t1 = Vec2d(self.id_to_tile[id1])
+                t2 = Vec2d(self.id_to_tile[id2])
+                self.abstraction_graph.add_edge(id1, id2, meta={"cost": distance_euclidean(t1, t2)})
 
         # 3.1 Connect Horizontal Edges
         for row_raw in range(1, self.height - 1):
@@ -94,9 +101,9 @@ class UniformAbstraction(object):
                     continue
                 id1 = self._id_from_tile((row + 1, col))
                 id2 = self._id_from_tile((row, col))
-                # t1 = self.id_to_tile[id1]
-                # t2 = self.id_to_tile[id2]
-                self.abstraction_graph.add_edge(id1, id2)
+                t1 = Vec2d(self.id_to_tile[id1])
+                t2 = Vec2d(self.id_to_tile[id2])
+                self.abstraction_graph.add_edge(id1, id2, meta={"cost": distance_euclidean(t1, t2)})
 
     def _get_region(self, tile):
         return self.regions_map[tile[0]][tile[1]]

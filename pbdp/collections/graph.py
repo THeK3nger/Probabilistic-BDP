@@ -1,21 +1,27 @@
 __author__ = 'davide'
 
 
-class MultiGraph(object):
+class Graph(object):
     """
-    Represent an undirected multigraph.
-
-    In a multigraph pair of nodes can be connected by multiple edges.
+    Represent an undirected graph.
     """
 
     def __init__(self):
-        self.vertices = set([])
-        self.edges = set([])  # (node, node, metadata)
+        self.graph = {}
         self.vertex_labels = {}
         self.edge_labels = {}
 
+    @property
+    def vertices(self):
+        return self.graph.keys()
+
+    @property
+    def edges(self):
+        return [(x, y) for x in self.vertices for y in self.vertices if y in self.graph[x]]
+
     def add_node(self, node, meta=None):
-        self.vertices.add(node)
+        if node not in self.graph.keys():
+            self.graph[node] = set([])
         if meta is not None:
             self.vertex_labels[node] = meta
 
@@ -23,16 +29,15 @@ class MultiGraph(object):
         if node in self.vertices:
             self.vertex_labels[node] = meta
 
-    def add_edge(self, first, second, id=None, meta=None):
+    def add_edge(self, first, second, meta=None):
         if first not in self.vertices:
             self.add_node(first)
         if second not in self.vertices:
             self.add_node(second)
-        if id is None:
-            id = hash((first, second))
-        self.edges.add((id, (first, second)))
+        self.graph[first].add(second)
+        self.graph[second].add(first)
         if meta is not None:
-            self.edge_labels[(id, (first, second))] = meta
+            self.edge_labels[(first, second)] = meta
 
     def update_edge_label(self, edge, meta):
         if edge in self.edges:
@@ -52,10 +57,10 @@ class MultiGraph(object):
         :param node:
         :return:
         """
-        return set([n for n in self.edges if n[1][0] == node or n[1][1] == node])
+        return self.graph[node]
 
     def __getitem__(self, item):
         return self.neighbours(item)
 
     def __contains__(self, item):
-        return item in self.vertices
+        return item in self.graph.keys()

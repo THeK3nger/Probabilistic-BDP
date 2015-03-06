@@ -78,6 +78,10 @@ class LogicalMap(object):
 
 def distance_euclidean(start, end):
     """Compute euclidean distance between two points."""
+    if not isinstance(start, Vec2d):
+        start = Vec2d(start)
+    if not isinstance(end, Vec2d):
+        end = Vec2d(end)
     return (start - end).magnitude
 
 
