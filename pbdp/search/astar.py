@@ -26,7 +26,7 @@ def astar(searchable, start, goal, heuristic):
         while not c == s:
             c = closed[c][3]  # TODO: Change with position enum.
             p.append(c)
-        return p
+        return list(reversed(p))
 
     if start == goal:
         return [start]     # 0 steps, empty self.path
@@ -36,7 +36,7 @@ def astar(searchable, start, goal, heuristic):
 
     # node = (f, g, coord, parent)  and start node has g=0 and f = h and no parent
     heappush(openlist, (heuristic(start, goal), 0, start, None))
-    print(openlist)
+    # print(openlist)
     while len(openlist) != 0:
         # pop best node from open list (lowest f)
         node = heappop(openlist)
