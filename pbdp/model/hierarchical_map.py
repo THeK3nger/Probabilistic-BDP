@@ -82,7 +82,7 @@ class HierarchicalMap(object):
         else:
             cluster_col = first[1] * self.cluster_size - 1
         cluster_row_start = first[0] * self.cluster_size
-        cluster_row_end = min(self.original_map.height-1,  (first[0] + 1) * self.cluster_size)
+        cluster_row_end = min(self.original_map.height - 1,  (first[0] + 1) * self.cluster_size)
         cluster_row_current = cluster_row_start
 
         def booth_free_test():
@@ -114,7 +114,7 @@ class HierarchicalMap(object):
         else:
             cluster_row = first[0] * self.cluster_size - 1
         cluster_col_start = first[1] * self.cluster_size
-        cluster_col_end = min(self.original_map.width-1, (first[1] + 1) * self.cluster_size)
+        cluster_col_end = min(self.original_map.width - 1, (first[1] + 1) * self.cluster_size)
         cluster_col_current = cluster_col_start
 
         while cluster_col_current < cluster_col_end:
