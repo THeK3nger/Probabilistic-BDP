@@ -82,7 +82,7 @@ class HierarchicalMap(object):
         else:
             cluster_col = first[1] * self.cluster_size - 1
         cluster_row_start = first[0] * self.cluster_size
-        cluster_row_end = min(self.original_map.height-1,  (first[0] + 1) * self.cluster_size)
+        cluster_row_end = min(self.original_map.height - 1,  (first[0] + 1) * self.cluster_size)
         cluster_row_current = cluster_row_start
 
         def booth_free_test():
@@ -114,7 +114,7 @@ class HierarchicalMap(object):
         else:
             cluster_row = first[0] * self.cluster_size - 1
         cluster_col_start = first[1] * self.cluster_size
-        cluster_col_end = min(self.original_map.width-1, (first[1] + 1) * self.cluster_size)
+        cluster_col_end = min(self.original_map.width - 1, (first[1] + 1) * self.cluster_size)
         cluster_col_current = cluster_col_start
 
         while cluster_col_current < cluster_col_end:
@@ -157,24 +157,6 @@ class HierarchicalMap(object):
         for i in range(0, self.cluster_height - 1):
             for j in range(0, self.cluster_width):
                 self.find_horizontal_entrances((i, j), (i + 1, j))
-
-    def __add_edges_list(self, graph, ed_list):
-        for ed in ed_list:
-            cost = distance_euclidean(ed[0], ed[1])
-            if cost is not None:
-                graph.add_undirected_edge(ed, 1)
-
-    def connect_new_node(self, original_graph, new_node):
-        # TODO original graph should be copied (to avoid side effect, but for now forgot about this)
-
-        node_cluster = self.get_tile_cluster(new_node)
-        i, j = node_cluster
-
-        # Connect to every entrance
-        node_to_entrances = [(new_node, e) for e in self.get_all_in_cluster(node_cluster)]
-        self.__add_edges_list(original_graph, node_to_entrances)
-
-        return original_graph
 
 
 class ExtendedAbstraction(object):
@@ -221,13 +203,15 @@ class ExtendedAbstraction(object):
         if node_cluster == end_cluster:
             return self.original_abstraction.abstraction_graph.neighbours(node) | {self.end}
 
-
         return self.original_abstraction.abstraction_graph.neighbours(node)
 
     def cost(self, first, second):
         if first not in self.neighbours(second):
             return float('inf')
-        return distance_euclidean(first, second)
+        edge_label = self.original_abstraction.abstraction_graph.get_edge_label((first, second))
+        if edge_label is None:
+            return distance_euclidean(first, second)
+        return edge_label["cost"]
 
     def _is_node(self, node):
         return node == self.start or node == self.end or node in self.original_abstraction.abstraction_graph

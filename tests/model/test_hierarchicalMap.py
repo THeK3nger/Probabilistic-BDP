@@ -28,6 +28,3 @@ class TestHierarchicalMap(TestCase):
 
     def test_get_tile_cluster(self):
         self.assertEqual((0, 0), self.abstraction.get_tile_cluster((5, 5)))
-
-    # def test_connect_new_node(self):
-    #     self.fail()

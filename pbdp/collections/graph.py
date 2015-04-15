@@ -49,7 +49,11 @@ class Graph(object):
 
     def get_edge_label(self, edge):
         if edge in self.edges:
-            return self.edge_labels[edge]
+            swap = lambda t: (t[1], t[0])
+            if edge in self.edge_labels.keys():
+                return self.edge_labels[edge]
+            if swap(edge) in self.edge_labels.keys():
+                return self.edge_labels[swap(edge)]
 
     def neighbours(self, node):
         """
