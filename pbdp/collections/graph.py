@@ -167,8 +167,8 @@ class ExtendedGraph(object):
         if edge in self.ext_edge_labels.keys():
             return self.ext_edge_labels[edge]
         if swap(edge) in self.ext_edge_labels.keys():
-            return self.ext_edge_labels[edge]
-        return self._original_graph.get_edgle_label(edge)
+            return self.ext_edge_labels[swap(edge)]
+        return self._original_graph.get_edge_label(edge)
 
     def neighbours(self, node):
         if node in self.ext_vertices:
