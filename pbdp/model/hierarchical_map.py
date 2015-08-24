@@ -8,13 +8,14 @@ import itertools
 from pbdp.collections.graph import Graph
 from pbdp.model.map import LogicalMap, distance_euclidean
 
+
 class HierarchicalMap(object):
     ENTRANCE_POSITION = 0
     ENTRANCE_CLUSTERS = 1
 
     def __init__(self, original_map, div_amount):
         """
-
+        Constructor
         :param original_map:
         :type original_map LogicalMap
         :param div_amount:
