@@ -5,7 +5,7 @@ Contains the algorithm for the map decomposition.
 import math
 import itertools
 
-from pbdp.collections.graph import Graph
+from pbdp.collections.graph import Graph, ExtendedGraph
 from pbdp.model.map import LogicalMap, distance_euclidean
 
 
@@ -180,39 +180,23 @@ class ExtendedAbstraction(object):
         """
         self.original_abstraction = abstraction
         self.start = start
+        self.start_cluster = self.original_abstraction.get_tile_cluster(start)
         self.end = end
+        self.end_cluster = self.original_abstraction.get_tile_cluster(end)
+        start_connection = self.original_abstraction.get_all_in_cluster(self.start_cluster)
+        start_labels = [distance_euclidean(start, x) for x in start_connection]
+        end_connection = self.original_abstraction.get_all_in_cluster(self.end_cluster)
+        end_labels = [distance_euclidean(end, x) for x in end_connection]
+        self.extended_graph = ExtendedGraph(abstraction.abstraction_graph)
+        self.extended_graph.add_extended_node(start, start_connection, start_labels)
+        self.extended_graph.add_extended_node(end, end_connection, end_labels)
 
     def neighbours(self, node):
-        if not self._is_node(node):
-            return []
-
-        # Neighbours of start
-        start_cluster = self.original_abstraction.get_tile_cluster(self.start)
-        if node == self.start:
-            return self.original_abstraction.get_all_in_cluster(start_cluster)
-        # Neighbours of end
-        end_cluster = self.original_abstraction.get_tile_cluster(self.end)
-        if node == self.end:
-            return self.original_abstraction.get_all_in_cluster(end_cluster)
-
-        node_cluster = self.original_abstraction.get_tile_cluster(node)
-
-        # Add start to the neighbour in the same cluster of start.
-        if node_cluster == start_cluster:
-            return self.original_abstraction.abstraction_graph.neighbours(node) | {self.start}
-        # Add end to the neighbour in the same cluster of end.
-        if node_cluster == end_cluster:
-            return self.original_abstraction.abstraction_graph.neighbours(node) | {self.end}
-
-        return self.original_abstraction.abstraction_graph.neighbours(node)
+        return self.extended_graph.neighbours(node)
 
     def cost(self, first, second):
-        if first not in self.neighbours(second):
-            return float('inf')
-        edge_label = self.original_abstraction.abstraction_graph.get_edge_label((first, second))
-        if edge_label is None:
-            return distance_euclidean(first, second)
-        return edge_label["cost"]
+        c = self.extended_graph.get_edge_label((first, second))
+        return c if c is not None else float('inf')
 
     def _is_node(self, node):
-        return node == self.start or node == self.end or node in self.original_abstraction.abstraction_graph
+        return node in self.extended_graph.vertices
