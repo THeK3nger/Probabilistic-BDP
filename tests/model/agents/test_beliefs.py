@@ -9,6 +9,18 @@ class TestAgentBeliefModel(TestCase):
     def test_create(self):
         beliefs = AgentBeliefsModel()
 
+    def test_clone(self):
+        beliefs = AgentBeliefsModel()
+        beliefs.update((1,2),0.5)
+        beliefs.update((2,2),0.4)
+        beliefs.update((1,2),0.3)
+        cloned = beliefs.clone()
+        clone_decayed = beliefs.decayed()
+        self.assertEqual(cloned[1,2],beliefs[1,2])
+        self.assertEqual(cloned[2,2],beliefs[2,2])
+        beliefs.decay()
+        self.assertEqual(clone_decayed[1,2],beliefs[1,2])
+
     def test_update(self):
         beliefs = AgentBeliefsModel()
         beliefs.update((1,2),0.5)

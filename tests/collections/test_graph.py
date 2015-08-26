@@ -61,7 +61,7 @@ class TestExtensionGraph(TestCase):
         self.base_graph.add_edge(4,5)
 
         self.test_graph = ExtendedGraph(self.base_graph)
-        #TODO: I'm obligated to put a label for each adj node. This is bad.
+        # TODO: I'm obligated to put a label for each adj node. This is bad.
         self.test_graph.add_extended_node("A", [1, 2], ["Cane", "Pizza"])
         self.test_graph.add_extended_node("B", [3, 4])
 
