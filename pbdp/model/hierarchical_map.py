@@ -184,9 +184,9 @@ class ExtendedAbstraction(object):
         self.end = end
         self.end_cluster = self.original_abstraction.get_tile_cluster(end)
         start_connection = self.original_abstraction.get_all_in_cluster(self.start_cluster)
-        start_labels = [distance_euclidean(start, x) for x in start_connection]
+        start_labels = [{"type": "intra", "cost": distance_euclidean(start, x)} for x in start_connection]
         end_connection = self.original_abstraction.get_all_in_cluster(self.end_cluster)
-        end_labels = [distance_euclidean(end, x) for x in end_connection]
+        end_labels = [{"type": "intra", "cost": distance_euclidean(end, x)} for x in end_connection]
         self.extended_graph = ExtendedGraph(abstraction.abstraction_graph)
         self.extended_graph.add_extended_node(start, start_connection, start_labels)
         self.extended_graph.add_extended_node(end, end_connection, end_labels)
@@ -196,7 +196,7 @@ class ExtendedAbstraction(object):
 
     def cost(self, first, second):
         c = self.extended_graph.get_edge_label((first, second))
-        return c if c is not None else float('inf')
+        return c["cost"] if c is not None else float('inf')
 
     def _is_node(self, node):
         return node in self.extended_graph.vertices
