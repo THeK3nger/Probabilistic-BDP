@@ -192,7 +192,9 @@ class ExtendedAbstraction(object):
         self.extended_graph.add_extended_node(end, end_connection, end_labels)
 
     def neighbours(self, node):
-        return self.extended_graph.neighbours(node)
+        all_neighbours = self.extended_graph.neighbours(node)
+        return [x for x in all_neighbours
+                if self.extended_graph.get_edge_label((node,x))["cost"] != float('inf')]
 
     def cost(self, first, second):
         c = self.extended_graph.get_edge_label((first, second))

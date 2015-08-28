@@ -62,3 +62,6 @@ class AgentBeliefsModel(object):
 
     def __getitem__(self, item):
         return self._beliefs[item]
+
+    def __contains__(self, item):
+        return item in self._beliefs.keys()
