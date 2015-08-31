@@ -17,10 +17,7 @@ def hpa(searchable, start, goal, heuristic):
     :param heuristic:
     :return:
     """
-    extended = ExtendedAbstraction(searchable, start, goal)
-
-    # Find High-Level-Path
-    high_level = astar(extended, start, goal, heuristic)
+    high_level = hpa_high_level(searchable, start, goal, heuristic)
 
     def merge_sub_path(accumulator, first, second):
         return accumulator + astar(searchable.original_map, Vec2d(first), Vec2d(second), heuristic)
@@ -33,3 +30,8 @@ def hpa(searchable, start, goal, heuristic):
 
     print(path)
     return path
+
+def hpa_high_level(searchable, start, goal, heuristic):
+    extended = ExtendedAbstraction(searchable, start, goal)
+    high_level = astar(extended, start, goal, heuristic)
+    return high_level
