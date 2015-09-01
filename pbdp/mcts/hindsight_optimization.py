@@ -5,6 +5,7 @@ import random
 
 from pbdp.model.map import LogicalMap, distance_euclidean
 from pbdp.search.hpa import hpa_high_level
+from pbdp.model.path import Path
 
 class HindsightOptimization(object):
     """
@@ -17,16 +18,14 @@ class HindsightOptimization(object):
         policy = {}
         for i in range(limit):
             roll = HindsightOptimization.rollout(map_abstraction, beliefs_model)
-            path = hpa_high_level(roll, start, end, distance_euclidean)
-            if len(path) == 0:
+            path = Path(hpa_high_level(roll, start, end, distance_euclidean))
+            if path.is_empty():
                 continue
-            # TODO: path length is wrong for now! Add the real path length later on!
-            path_length = len(path)
-            if (tuple(path)) in policy.keys():
-                count = policy[tuple(path)]["count"] + 1
+            if path.to_tuple() in policy.keys():
+                count = policy[path.to_tuple()]["count"] + 1
             else:
                 count = 1
-            policy[tuple(path)] = {"cost": len(path), "count": count}
+            policy[path.to_tuple()] = {"cost": path.length, "count": count}
         return policy
 
 
