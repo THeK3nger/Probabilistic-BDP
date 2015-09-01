@@ -4,14 +4,14 @@ import copy
 
 from pbdp.model.map import LogicalMap, distance_euclidean
 from pbdp.search.hpa import hpa_high_level
-
+from pbdp.model.path import Path
 
 class OptimisticPolicy(object):
 
     @staticmethod
     def search_path(start, end, map_abstraction, beliefs_model, threshold):
         pruned = OptimisticPolicy.prune_map(map_abstraction, beliefs_model, threshold)
-        path = hpa_high_level(pruned, start, end, distance_euclidean)
+        path = Path(hpa_high_level(pruned, start, end, distance_euclidean))
         return path
 
     @staticmethod

@@ -18,6 +18,6 @@ class TestOptimisticPolicy(TestCase):
 
     def test_optimistic_search(self):
         path = OptimisticPolicy.search_path((5,5), (40,40), self.base, self.beliefs, 0.1)
-        self.assertTrue(len(path) > 0)
+        self.assertTrue(path.length > 0)
         path = OptimisticPolicy.search_path((5,5), (40,40), self.base, self.beliefs, 0.5)
-        self.assertListEqual(path, [])
+        self.assertTrue(path.length == 0)

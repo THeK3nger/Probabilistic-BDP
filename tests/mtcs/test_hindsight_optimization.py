@@ -14,8 +14,8 @@ class TestHindsightOptimization(TestCase):
         for edge in self.base.abstraction_graph.edge_labels.keys():
             label = self.base.abstraction_graph.edge_labels[edge]
             if label["type"] == 'inter':
-                self.beliefs.update(edge, 0.4)
+                self.beliefs.update(edge, 0.7)
 
     def test_hindsight_search(self):
-        policy = HindsightOptimization.search_path((5,5), (40,40), self.base, self.beliefs, 10)
+        policy = HindsightOptimization.search_path((5,5), (40,40), self.base, self.beliefs, 50)
         print(policy)

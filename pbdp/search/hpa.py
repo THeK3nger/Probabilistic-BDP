@@ -17,10 +17,10 @@ def hpa(searchable, start, goal, heuristic):
     :param heuristic:
     :return:
     """
-    high_level = hpa_high_level(searchable, start, goal, heuristic)
+    high_level = hpa_high_level(searchable, start, goal, heuristic)[0]
 
     def merge_sub_path(accumulator, first, second):
-        return accumulator + astar(searchable.original_map, Vec2d(first), Vec2d(second), heuristic)
+        return accumulator + (astar(searchable.original_map, Vec2d(first), Vec2d(second), heuristic))[0]
 
     path = []
     i = 0

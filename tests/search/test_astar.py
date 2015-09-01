@@ -15,17 +15,17 @@ class TestAstar(TestCase):
     def test_astar(self):
         # Start Equal To End
         path = astar(self.testing_map, Vec2d(5, 5), Vec2d(5, 5), distance_euclidean)
-        self.assertEqual([Vec2d(5, 5)], path)
+        self.assertEqual([Vec2d(5, 5)], path[0])
 
         # Start Unreachable
         path = astar(self.testing_map, Vec2d(0, 0), Vec2d(5, 5), distance_euclidean)
-        self.assertEqual([], path)
+        self.assertEqual([], path[0])
 
         # End Unreachable
         path = astar(self.testing_map, Vec2d(5, 5), Vec2d(0, 0), distance_euclidean)
-        self.assertEqual([], path)
+        self.assertEqual([], path[0])
 
         # A Good Path
         path = astar(self.testing_map, Vec2d(5, 5), Vec2d(30, 30), distance_euclidean)
         print(len(path))
-        self.assertEqual(31, len(path))
+        self.assertEqual(31, len(path[0]))

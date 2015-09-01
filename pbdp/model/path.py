@@ -14,10 +14,11 @@ class Path(object):
 
     def __init__(self, list=None):
         if list is not None:
-            self._path = list
+            self._path = list[0]
+            self._length = list[1]
         else:
             self._path = []
-        self._length = -1
+            self._length = -1
 
     def append(self, item):
         if not isinstance(item,Vec2d):
