@@ -19,6 +19,17 @@ class AgentBeliefsModel(object):
         self._beliefs = {}  # Map from edge to a real number.
         self._decay_speed = 0.5  # For now, decay speed is the same for every edge.
 
+    def initialize(self, map_abstraction, initial_value=0.5):
+        """
+        Initialize beliefs on the "inter" edges of a map abstraction.
+        :param map_abstraction:
+        :return:
+        """
+        for edge in map_abstraction.abstraction_graph.edge_labels.keys():
+            label = map_abstraction.abstraction_graph.edge_labels[edge]
+            if label["type"] == 'inter':
+                self.update(edge, initial_value)
+
     def update(self, edge, value):
         """
         Update a particular edge with a new value for the belief degree.
