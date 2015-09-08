@@ -5,7 +5,7 @@ Contains the algorithm for the map decomposition.
 import math
 import itertools
 
-from pbdp.collections.graph import Graph, ExtendedGraph
+from pbdp.bdpcollections.graph import Graph, ExtendedGraph
 from pbdp.model.map import LogicalMap, distance_euclidean
 
 
