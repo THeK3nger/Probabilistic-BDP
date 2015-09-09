@@ -35,6 +35,20 @@ class HierarchicalMap(object):
     def cluster_height(self):
         return int(math.ceil(self.original_map.height / float(self.cluster_size)))
 
+    def is_traversable(self, start, end):
+        """
+        Check if it is possible to move from start to end.
+
+        start and end MUST be adjacent and with a finite cost!
+        :param start:
+        :param end:
+        :return:
+        """
+        return self.abstraction_graph.is_adjacent(start, end) and \
+               self.abstraction_graph.get_edge_label((start, end))["cost"] < float('inf')
+
+    ## ABSTRACTION GENERATION ##
+
     def generate_abstract_graph(self):
         # Find Entrances
         self.__search_for_entrances()

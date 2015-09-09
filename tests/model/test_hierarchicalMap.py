@@ -28,3 +28,7 @@ class TestHierarchicalMap(TestCase):
 
     def test_get_tile_cluster(self):
         self.assertEqual((0, 0), self.abstraction.get_tile_cluster((5, 5)))
+
+    def test_is_traversable(self):
+        self.abstraction.generate_abstract_graph()
+        self.assertTrue(self.abstraction.is_traversable((9,5),(5,9)))
