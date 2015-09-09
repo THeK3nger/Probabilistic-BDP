@@ -8,6 +8,9 @@ class Policy(object):
         self._current_idx = 0
         self._delta_cost = 0
 
+    def is_valid(self, test_position):
+        return self._current == test_position
+
     def add_path(self, path):
         path_key = path.to_tuple()
         if path_key in self._policy_table.keys():
@@ -45,3 +48,6 @@ class Policy(object):
             base += str(item[0]) + " || " + str(item[1]) + "\n"
         return base
 
+
+class PolicyValidityException(Exception):
+    pass
