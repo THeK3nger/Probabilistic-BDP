@@ -21,14 +21,17 @@ class Policy(object):
 
     def next_action_score(self, destination):
         if self._current is None:
-            self._current = self._policy_table.items()[0][0]
+            self._current = next(iter(self._policy_table.keys()))[0]
         total_rollouts = 0
         different_costs = []
         for path in self._policy_table.keys():
             if path[self._current_idx] == self._current and path[self._current_idx+1] == destination:
                 total_rollouts += self._policy_table[path]["count"]
                 different_costs.append((self._policy_table[path]["count"], self._policy_table[path]["cost"]))
-        return sum([x[0]*x[1] for x in different_costs])/total_rollouts
+        if total_rollouts is not 0:
+            return sum([x[0]*x[1] for x in different_costs])/total_rollouts
+        else:
+            return float('inf')
 
     def expand_policy(self, action, cost):
         """
