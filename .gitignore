@@ -6,3 +6,5 @@
 *.sln
 
 PythonApplication1.*
+
+*.csv
