@@ -14,7 +14,8 @@ class TestOptimisticPolicy(TestCase):
         self.beliefs.initialize(self.base, 0.4)
 
     def test_optimistic_search(self):
+        # TODO: UPDATE ACCORDING RECENT CHANGES IN POLICY
         path = OptimisticPolicy.search_path((5,5), (40, 40), self.base, self.beliefs, 0.1)
-        self.assertTrue(path.length > 0)
+        self.assertFalse(path.is_empty())
         path = OptimisticPolicy.search_path((5,5), (40, 40), self.base, self.beliefs, 0.5)
-        self.assertTrue(path.length == 0)
+        self.assertTrue(path.is_empty())

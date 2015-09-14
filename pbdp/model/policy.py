@@ -8,6 +8,15 @@ class Policy(object):
         self._current_idx = 0
         self._delta_cost = 0
 
+    def is_empty(self):
+        """
+        Returns true if the policy is empty.
+
+        An empty policy is a policy with no useful information.
+        :return:
+        """
+        return self._current_idx >= len(next(iter(self._policy_table.keys()))) - 1
+
     def is_valid(self, test_position):
         return self._current == test_position
 
