@@ -14,7 +14,7 @@ class TestHpa(TestCase):
         self.base.generate_abstract_graph()
 
     def test_hpa(self):
-        path = hpa(self.base, (5, 5), (40, 40), distance_euclidean)
+        path, _ = hpa(self.base, (5, 5), (40, 40), distance_euclidean)
         self._print_path(path)
         self.assertTrue(True)  # TODO: Better test. For now, graphical inspection.
 

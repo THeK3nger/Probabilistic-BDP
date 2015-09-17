@@ -20,6 +20,7 @@ class TestBenchmarkTools(TestCase):
             random_cell = benchmark.random_free_cell(map)
             self.assertTrue(map.is_traversable(random_cell))
 
+
 class TestCSVDatabase(TestCase):
 
     def setUp(self):

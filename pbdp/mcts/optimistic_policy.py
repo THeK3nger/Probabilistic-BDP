@@ -12,7 +12,8 @@ class OptimisticPolicy(object):
     @staticmethod
     def search_path(start, end, map_abstraction, beliefs_model, threshold):
         pruned = OptimisticPolicy.prune_map(map_abstraction, beliefs_model, threshold)
-        path = Path(hpa_high_level(pruned, start, end, distance_euclidean))
+        hpath, cost, profile_data = hpa_high_level(pruned, start, end, distance_euclidean)
+        path = Path((hpath, cost))
         p = Policy()
         p.add_path(path)
         return p

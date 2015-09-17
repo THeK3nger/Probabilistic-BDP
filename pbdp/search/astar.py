@@ -28,8 +28,10 @@ def astar(searchable, start, goal, heuristic):
             p.append(c)
         return list(reversed(p))
 
+    profile_data = {'expanded': 0}
+
     if start == goal:
-        return [start], 0  # 0 steps, empty self.path
+        return [start], 0, profile_data  # 0 steps, empty self.path
 
     openlist = []
     closedlist = {}    # dictionary of expanded nodes - key=coord, data = node
@@ -50,7 +52,9 @@ def astar(searchable, start, goal, heuristic):
         # goal reached?
         if current == goal:
             # Rewind to find the final path!
-            return _reconstruct(current, start, closedlist), current_f
+            return _reconstruct(current, start, closedlist), current_f, profile_data
+
+        profile_data['expanded'] += 1
 
         # expand current node by getting all successors and adding them to open list
         adjacents = searchable.neighbours(current)
@@ -67,4 +71,4 @@ def astar(searchable, start, goal, heuristic):
             else:
                 heappush(openlist, adjnode)
 
-    return [], 0
+    return [], 0, profile_data
