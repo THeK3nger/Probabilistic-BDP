@@ -3,7 +3,7 @@ __author__ = 'davide'
 from heapq import heappush, heappop
 
 
-def astar(searchable, start, goal, heuristic):
+def astar(searchable, start, goal, heuristic, config=None):
     """ Performs A* over a searchable object.
 
     A searchable object is an object who exposes two methods:
@@ -16,7 +16,12 @@ def astar(searchable, start, goal, heuristic):
         * `start`       : The starting state.
         * `goal`        : The goal state.
         * `heuristic`   : An heuristic function between any state and the goal.
+        * `config`      : A configuration dictionary.
     """
+
+    config = {} if config is None else config
+    path_only = config['path_only'] if 'path_only' in config else False
+    profile = config['profile'] if 'profile' in config else False
 
     def _reconstruct(c, s, closed):
         """
@@ -31,7 +36,7 @@ def astar(searchable, start, goal, heuristic):
     profile_data = {'expanded': 0}
 
     if start == goal:
-        return [start], 0, profile_data  # 0 steps, empty self.path
+        return return_path(path_only, profile, profile_data, [start])
 
     openlist = []
     closedlist = {}    # dictionary of expanded nodes - key=coord, data = node
@@ -52,9 +57,10 @@ def astar(searchable, start, goal, heuristic):
         # goal reached?
         if current == goal:
             # Rewind to find the final path!
-            return _reconstruct(current, start, closedlist), current_f, profile_data
+            return return_path(path_only,profile,profile_data,_reconstruct(current, start, closedlist), current_f)
 
-        profile_data['expanded'] += 1
+        if profile:
+            profile_data['expanded'] += 1
 
         # expand current node by getting all successors and adding them to open list
         adjacents = searchable.neighbours(current)
@@ -71,4 +77,13 @@ def astar(searchable, start, goal, heuristic):
             else:
                 heappush(openlist, adjnode)
 
-    return [], 0, profile_data
+    return return_path(path_only, profile, profile_data, [])
+
+
+def return_path(path_only, profile, profile_data, path, cost=0):
+    if path_only:
+        return path
+    elif profile:
+        return path, cost, profile_data  # 0 steps, empty self.path
+    else:
+        return path, cost
