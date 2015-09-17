@@ -17,13 +17,16 @@ class HindsightOptimization(object):
     @staticmethod
     def search_path(start, end, map_abstraction, beliefs_model, limit):
         policy = Policy()
+        global_profile_data = {'expanded': 0}
         for i in range(limit):
             roll = HindsightOptimization.rollout(map_abstraction, beliefs_model)
-            path = Path(hpa_high_level(roll, start, end, distance_euclidean))
+            hpath, cost, profile_data = hpa_high_level(roll, start, end, distance_euclidean)
+            path = Path((hpath, cost))
+            global_profile_data['expanded'] += profile_data['expanded']
             if path.is_empty():
                 continue
             policy.add_path(path)
-        return policy
+        return policy, global_profile_data
 
     @staticmethod
     def rollout(map_abstraction, beliefs_model):

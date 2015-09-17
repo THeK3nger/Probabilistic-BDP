@@ -16,7 +16,7 @@ class OptimisticPolicy(object):
         path = Path((hpath, cost))
         p = Policy()
         p.add_path(path)
-        return p
+        return p, profile_data
 
     @staticmethod
     def prune_map(map_abstraction, beliefs_model, threshold):
