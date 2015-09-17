@@ -93,9 +93,11 @@ class CSVDatabase(object):
         self.records = {}
         self.tables = {}
 
-    def add_file(self, filename, fields):
+    def add_file(self, filename, fields, handler=True):
         self.records[filename] = fields
         self.tables[filename] = []
+        if handler:
+            return CSVFileHandler(filename, self)
 
     def add_record(self, filename, record):
         self.tables[filename].append(record)
@@ -129,3 +131,18 @@ class CSVDatabase(object):
                     spamwriter.writerow(row)
         print("[CSV] CSV files export complete!")
 
+
+class CSVFileHandler(object):
+
+    def __init__(self, filename, database):
+        self._filename = filename
+        self._database = database
+
+    def add_record(self, record):
+        return self._database.add_record(self._filename, record)
+
+    def query_column(self, field_name):
+        return self._database.query_column(self._filename, field_name)
+
+    def query_rows(self):
+        return self._database.query_rows(self._filename)

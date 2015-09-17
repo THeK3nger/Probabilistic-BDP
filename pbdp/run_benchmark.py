@@ -5,6 +5,7 @@ from pbdp.model.hierarchical_map import HierarchicalMap
 from pbdp.model.agents.beliefs import AgentBeliefsModel
 from pbdp.mcts.optimistic_policy import OptimisticPolicy
 
+
 def run_optimistic_policy_benchmark(maps, threshold):
     if not isinstance(threshold, (list, tuple)):
         threshold = [threshold]

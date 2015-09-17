@@ -24,17 +24,17 @@ class TestCSVDatabase(TestCase):
 
     def setUp(self):
         self.database = benchmark.CSVDatabase()
-        self.database.add_file("test.csv", ('TestFieldA', 'TestFieldB', 'TestFieldC'))
-        self.database.add_record("test.csv", (1, 2, 3))
-        self.database.add_record("test.csv", (4, 5, 6))
+        self.handler = self.database.add_file("test.csv", ('TestFieldA', 'TestFieldB', 'TestFieldC'))
+        self.handler.add_record((1, 2, 3))
+        self.handler.add_record((4, 5, 6))
 
     def test_add_file(self):
         self.database.add_file("newfile.csv", ('A', 'B'))
         self.assertTrue("newfile.csv" in self.database.records.keys())
 
     def test_insertion(self):
-        self.assertTrue(len(self.database.query_rows("test.csv")) == 2)
-        tfa = self.database.query_column("test.csv", 'TestFieldA')
+        self.assertTrue(len(self.handler.query_rows()) == 2)
+        tfa = self.handler.query_column('TestFieldA')
         self.assertTupleEqual(tfa, (1, 4))
 
     def test_writing(self):
