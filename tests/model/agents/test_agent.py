@@ -34,3 +34,8 @@ class TestAgent(TestCase):
     def test_update_beliefs(self):
         self.virtual_agent.update_beliefs()
         self.assertTrue(self.virtual_agent.beliefs[((9,5), (10,5))] == 1)
+
+    def test_execute_step(self):
+        while not self.virtual_agent.execute_step():
+            pass
+        self.assertNotEqual(self.virtual_agent.position, self.virtual_agent.history[0])

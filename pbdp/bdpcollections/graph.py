@@ -180,3 +180,6 @@ class ExtendedGraph(object):
             return extended_adjacent.union(original_neighbours)
         else:
             return original_neighbours
+
+    def is_adjacent(self, node_a, node_b):
+        return (node_a, node_b) in self.edges

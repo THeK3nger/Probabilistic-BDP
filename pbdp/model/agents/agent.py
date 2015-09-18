@@ -2,6 +2,7 @@ from pbdp.model.policy import Policy, PolicyValidityException
 from pbdp.model.hierarchical_map import ExtendedAbstraction, HierarchicalMap
 from pbdp.model.agents.beliefs import AgentBeliefsModel
 
+
 class VirtualAgent(object):
     """
     A VirtualAgent is a simulation of a real NPC moving in the map. It took a policy
@@ -24,6 +25,7 @@ class VirtualAgent(object):
         self.policy_function = policy_function
         self.profile_data = {'expanded': 0}
         self.history = [starting_position]
+        self.update_beliefs()
 
     def set_target(self, target):
         if target != self.target:
@@ -60,7 +62,7 @@ class VirtualAgent(object):
         An action is action_is_executable if and only if is not None and can be executed.
         :return:
         """
-        return action is not None and self.map.is_traversable(self.position, action)
+        return action is not None and self.map_extension.is_traversable(self.position, action)
 
     def update_beliefs(self):
         """
@@ -81,11 +83,15 @@ class VirtualAgent(object):
         """
         # Find best action.
         nextpos = self.compute_next_actions()
-        if self.action_is_executable(nextpos):
-            self.position = nextpos
-            self.history.append(nextpos)
+        action = nextpos[0][0]
+        if self.action_is_executable(action):
+            print("AGENT STEP :: {} => {}".format(self.position, action))
+            self.position = action
+            self.history.append(action)
+            return True
         else:
-            pass
+            self.update_beliefs()
+            return False
 
 
 

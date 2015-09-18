@@ -231,5 +231,19 @@ class ExtendedAbstraction(object):
         c = self.extended_graph.get_edge_label((first, second))
         return c["cost"] if c is not None else float('inf')
 
+    def is_traversable(self, edge, end=None):
+        """
+        Check if it is possible to move from start to end.
+
+        start and end MUST be adjacent and with a finite cost!
+        :param start:
+        :param end:
+        :return:
+        """
+        # Allow the use of an edge tuple as an argument.
+        start, end = edge if isinstance(edge[0], tuple) else (edge, end)
+        return self.extended_graph.is_adjacent(start, end) and \
+               self.extended_graph.get_edge_label((start, end))["cost"] < float('inf')
+
     def _is_node(self, node):
         return node in self.extended_graph.vertices
