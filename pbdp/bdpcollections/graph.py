@@ -1,5 +1,6 @@
 __author__ = 'davide'
 
+import itertools
 
 class Graph(object):
     """
@@ -16,14 +17,14 @@ class Graph(object):
         """
         :return: Returns the list of vertices in the graph.
         """
-        return [x for x in self.graph.keys()]
+        return (x for x in self.graph.keys())
 
     @property
     def edges(self):
         """
         :return: Returns the list of edges in the graph.
         """
-        return [(x, y) for x in self.vertices for y in self.vertices if y in self.graph[x]]
+        return ((x, y) for x in self.vertices for y in self.vertices if y in self.graph[x])
 
     def add_node(self, node, meta=None):
         """
@@ -116,27 +117,27 @@ class ExtendedGraph(object):
 
     @property
     def ext_vertices(self):
-        return [x for x in self.extension.keys()]
+        return (x for x in self.extension.keys())
 
     @property
     def vertices(self):
         """
         :return: Returns the list of vertices in the graph.
         """
-        return self.ext_vertices + self._original_graph.vertices
+        return itertools.chain(self.ext_vertices, self._original_graph.vertices)
 
     @property
     def ext_edges(self):
         swap = lambda t: (t[1], t[0])
-        edges = [(x, y) for x in self.ext_vertices for y in self.extension[x]]
-        return edges + [swap(x) for x in edges]
+        edges = ((x, y) for x in self.ext_vertices for y in self.extension[x])
+        return itertools.chain(edges, (swap(x) for x in edges))
 
     @property
     def edges(self):
         """
         :return: Returns the list of edges in the graph.
         """
-        return self._original_graph.edges + self.ext_edges
+        return itertools.chain(self._original_graph.edges, self.ext_edges)
 
     @property
     def boundary_vertices(self):
