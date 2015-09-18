@@ -29,6 +29,9 @@ class TestAgentBeliefModel(TestCase):
         self.assertEqual(beliefs[1,2],0.3)
         self.assertEqual(beliefs[2,2],0.4)
         self.assertRaises(ValueError,beliefs.update,(1,2),1.5)
+        # Boundary Cases, No Error Expected
+        beliefs.update((2,2),1.0)
+        beliefs.update((1,2),0.0)
 
     def test_decay(self):
         beliefs = AgentBeliefsModel()

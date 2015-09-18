@@ -22,6 +22,8 @@ class VirtualAgent(object):
         # policy_function is a function who takes the following parameters:
         # start, end, map_abstraction, beliefs_model
         self.policy_function = policy_function
+        self.profile_data = {'expanded': 0}
+        self.history = [starting_position]
 
     def set_target(self, target):
         if target != self.target:
@@ -47,7 +49,8 @@ class VirtualAgent(object):
         :return:
         """
         if not self.policy_is_valid():
-            self.policy = self.policy_function(self.position, self.target, self.map, self.beliefs)
+            self.policy, profile_data_tmp = self.policy_function(self.position, self.target, self.map, self.beliefs)
+            self.profile_data['expanded'] += profile_data_tmp['expanded']
         scores = [(p, self.policy.next_action_score(p))
                   for p in self.map_extension.neighbours(self.position)]
         return sorted(scores, key=lambda x: x[1])
@@ -59,13 +62,30 @@ class VirtualAgent(object):
         """
         return action is not None and self.map.is_traversable(self.position, action)
 
+    def update_beliefs(self):
+        """
+        Update agent beliefs according the graph in the same cluster.
+        :return:
+        """
+        for v1 in self.map_extension.neighbours(self.position):
+            for v2 in self.map_extension.neighbours(v1):
+                if self.map.is_inter_edge((v1, v2)):
+                    score = 1.0 if self.map.is_traversable(v1, v2) else 0.0
+                    self.beliefs.update((v1, v2), score)
+
     def execute_step(self):
         """
         Execute ONE step on the HIGH-LEVEL based on the current policy.
         :return:
         """
         # Find best action.
-        next = self.compute_next_actions()
+        nextpos = self.compute_next_actions()
+        if self.action_is_executable(nextpos):
+            self.position = nextpos
+            self.history.append(nextpos)
+        else:
+            pass
+
 
 
 

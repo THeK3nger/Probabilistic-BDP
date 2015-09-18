@@ -30,3 +30,7 @@ class TestAgent(TestCase):
     def test_compute_next_actions(self):
         actions = self.virtual_agent.compute_next_actions()
         print(actions)  # Results validity NOT VERIFIED.
+
+    def test_update_beliefs(self):
+        self.virtual_agent.update_beliefs()
+        self.assertTrue(self.virtual_agent.beliefs[((9,5), (10,5))] == 1)

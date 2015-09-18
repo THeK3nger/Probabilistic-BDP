@@ -47,6 +47,15 @@ class HierarchicalMap(object):
         return self.abstraction_graph.is_adjacent(start, end) and \
                self.abstraction_graph.get_edge_label((start, end))["cost"] < float('inf')
 
+    def is_inter_edge(self, edge):
+        """
+        Return True if the given edge is an 'inter' edge.
+        :param edge:
+        :return:
+        """
+        return edge in self.abstraction_graph.edges and \
+               self.abstraction_graph.get_edge_label(edge)["type"] == 'inter'
+
     ## ABSTRACTION GENERATION ##
 
     def generate_abstract_graph(self):
@@ -97,7 +106,7 @@ class HierarchicalMap(object):
         else:
             cluster_col = first[1] * self.cluster_size - 1
         cluster_row_start = first[0] * self.cluster_size
-        cluster_row_end = min(self.original_map.height - 1,  (first[0] + 1) * self.cluster_size)
+        cluster_row_end = min(self.original_map.height - 1, (first[0] + 1) * self.cluster_size)
         cluster_row_current = cluster_row_start
 
         def booth_free_test():
@@ -115,7 +124,8 @@ class HierarchicalMap(object):
                 cluster_row_current += 1
             node_row_exit = cluster_row_current
             middle_row_node = int((node_row_exit + node_row_entrance) / 2)
-            self.vertical_entrances.append((((middle_row_node, cluster_col), (middle_row_node, cluster_col + 1)), (first, second)))
+            self.vertical_entrances.append(
+                (((middle_row_node, cluster_col), (middle_row_node, cluster_col + 1)), (first, second)))
 
     def find_horizontal_entrances(self, first, second):
         """
@@ -133,18 +143,21 @@ class HierarchicalMap(object):
         cluster_col_current = cluster_col_start
 
         while cluster_col_current < cluster_col_end:
-            while not self.__booth_free((cluster_row, cluster_col_current), (cluster_row + 1, cluster_col_current)) and cluster_col_current < cluster_col_end:
+            while not self.__booth_free((cluster_row, cluster_col_current), (
+                cluster_row + 1, cluster_col_current)) and cluster_col_current < cluster_col_end:
                 cluster_col_current += 1
 
             if cluster_col_current >= cluster_col_end:
                 return
 
             node_col_start = cluster_col_current
-            while self.__booth_free((cluster_row, cluster_col_current), (cluster_row + 1, cluster_col_current)) and cluster_col_current < cluster_col_end:
+            while self.__booth_free((cluster_row, cluster_col_current),
+                                    (cluster_row + 1, cluster_col_current)) and cluster_col_current < cluster_col_end:
                 cluster_col_current += 1
             node_col_exit = cluster_col_current
             middle_node = int((node_col_exit + node_col_start) / 2)
-            self.horizontal_entrances.append((((cluster_row, middle_node), (cluster_row + 1, middle_node)), (first, second)))
+            self.horizontal_entrances.append(
+                (((cluster_row, middle_node), (cluster_row + 1, middle_node)), (first, second)))
 
     def __booth_free(self, left_tile, right_tile):
         # Assume all the keys = all doors open.
@@ -208,7 +221,7 @@ class ExtendedAbstraction(object):
     def neighbours(self, node):
         all_neighbours = self.extended_graph.neighbours(node)
         return [x for x in all_neighbours
-                if self.extended_graph.get_edge_label((node,x))["cost"] != float('inf')]
+                if self.extended_graph.get_edge_label((node, x))["cost"] != float('inf')]
 
     def cost(self, first, second):
         c = self.extended_graph.get_edge_label((first, second))

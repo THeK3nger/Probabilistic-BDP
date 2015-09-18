@@ -38,7 +38,7 @@ class AgentBeliefsModel(object):
                       edge is traversable.
         :return: self
         """
-        if 0.0 < value < 1.0:
+        if 0.0 <= value <= 1.0:
             self._beliefs[edge] = value
         else:
             raise ValueError("Value is not a valid degree of belief. Must be in [0,1] interval.")
