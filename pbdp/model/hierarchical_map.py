@@ -35,7 +35,7 @@ class HierarchicalMap(object):
     def cluster_height(self):
         return int(math.ceil(self.original_map.height / float(self.cluster_size)))
 
-    def is_traversable(self, start, end):
+    def is_traversable(self, edge, end=None):
         """
         Check if it is possible to move from start to end.
 
@@ -44,15 +44,19 @@ class HierarchicalMap(object):
         :param end:
         :return:
         """
+        # Allow the use of an edge tuple as an argument.
+        start, end = edge if isinstance(edge[0], tuple) else (edge, end)
         return self.abstraction_graph.is_adjacent(start, end) and \
                self.abstraction_graph.get_edge_label((start, end))["cost"] < float('inf')
 
-    def is_inter_edge(self, edge):
+    def is_inter_edge(self, edge, end=None):
         """
         Return True if the given edge is an 'inter' edge.
         :param edge:
         :return:
         """
+        start, end = edge if isinstance(edge[0], tuple) else (edge, end)
+        edge = (start, end)
         return edge in self.abstraction_graph.edges and \
                self.abstraction_graph.get_edge_label(edge)["type"] == 'inter'
 

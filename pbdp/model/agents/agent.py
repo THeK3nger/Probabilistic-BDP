@@ -69,9 +69,10 @@ class VirtualAgent(object):
         """
         for v1 in self.map_extension.neighbours(self.position):
             for v2 in self.map_extension.neighbours(v1):
-                if self.map.is_inter_edge((v1, v2)):
-                    score = 1.0 if self.map.is_traversable(v1, v2) else 0.0
-                    self.beliefs.update((v1, v2), score)
+                edge = (v1, v2)
+                if self.map.is_inter_edge(edge):
+                    score = 1.0 if self.map.is_traversable(edge) else 0.0
+                    self.beliefs.update(edge, score)
 
     def execute_step(self):
         """
