@@ -44,6 +44,10 @@ class VirtualAgent(object):
         """
         return self.policy is not None and self.policy.is_valid(self.position)
 
+    def compute_policy(self):
+        self.policy, profile_data_tmp = self.policy_function(self.position, self.target, self.map, self.beliefs)
+        self.profile_data['expanded'] += profile_data_tmp['expanded']
+
     def compute_next_actions(self):
         """
         Returns a list of all the possible actions described by the policy
@@ -51,8 +55,7 @@ class VirtualAgent(object):
         :return:
         """
         if not self.policy_is_valid():
-            self.policy, profile_data_tmp = self.policy_function(self.position, self.target, self.map, self.beliefs)
-            self.profile_data['expanded'] += profile_data_tmp['expanded']
+            self.compute_policy()
         scores = [(p, self.policy.next_action_score(p))
                   for p in self.map_extension.neighbours(self.position)]
         return sorted(scores, key=lambda x: x[1])
@@ -75,6 +78,7 @@ class VirtualAgent(object):
                 if self.map.is_inter_edge(edge):
                     score = 1.0 if self.map.is_traversable(edge) else 0.0
                     self.beliefs.update(edge, score)
+        self.compute_policy()
 
     def execute_step(self):
         """
@@ -88,6 +92,7 @@ class VirtualAgent(object):
             print("AGENT STEP :: {} => {}".format(self.position, action))
             self.position = action
             self.history.append(action)
+            self.update_beliefs()  # TODO: For now, we force update after every step.
             return True
         else:
             self.update_beliefs()

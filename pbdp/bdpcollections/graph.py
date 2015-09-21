@@ -150,7 +150,7 @@ class ExtendedGraph(object):
             b_vertex = b_vertex.union(nodes)
         return b_vertex
 
-    def add_extended_node(self,new_node, adjacent_nodes, labels=None):
+    def add_extended_node(self, new_node, adjacent_nodes, labels=None):
         """
         Add a note to the extension.
         :param new_node: A new node. This node must not be included in the original graph.

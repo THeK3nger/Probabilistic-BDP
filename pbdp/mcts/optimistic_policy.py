@@ -23,9 +23,7 @@ class OptimisticPolicy(object):
         map_copy = copy.deepcopy(map_abstraction)
         for edge in map_copy.abstraction_graph.edges:
             if edge in beliefs_model and beliefs_model[edge] < threshold:
-                old_label = map_copy.abstraction_graph.get_edge_label(edge)
-                old_label["cost"] = float('inf')
-                map_copy.abstraction_graph.update_edge_label(edge, old_label)
+                map_copy.close_edge(edge)
         return map_copy
 
 

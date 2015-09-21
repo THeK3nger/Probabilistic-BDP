@@ -60,6 +60,42 @@ class HierarchicalMap(object):
         return edge in self.abstraction_graph.edges and \
                self.abstraction_graph.get_edge_label(edge)["type"] == 'inter'
 
+    def update_edge_cost(self, edge, new_cost):
+        """
+        Update the cost value for the given map abstraction edge.
+        :param edge: The target edge.
+        :param new_cost: The new cost for the edge.
+        """
+        old_label = self.abstraction_graph.get_edge_label(edge)
+        new_label = old_label.copy()
+        new_label["cost"] = new_cost
+        self.abstraction_graph.update_edge_label(edge, new_label)
+
+    def close_edge(self, edge):
+        """
+        Close an edge. Is equal to assign infinite to the edge cost.
+        :param edge: The target edge.
+        :return:
+        """
+        self.update_edge_cost(edge, float('inf'))
+
+    def is_edge_type(self, edge, type):
+        """
+        Check if the given edge is of a given type.
+        :param edge: The edge that we want to check.
+        :param type: The desired type of the edge.
+        :return:
+        """
+        edge_label = self.abstraction_graph.get_edge_label(edge)
+        return edge_label["type"] == type
+
+    @property
+    def edges(self):
+        """
+        :return: Returns all the edges of the map.s
+        """
+        return self.abstraction_graph.edges
+
     ## ABSTRACTION GENERATION ##
 
     def generate_abstract_graph(self):

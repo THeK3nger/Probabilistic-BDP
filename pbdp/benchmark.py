@@ -64,12 +64,9 @@ def randomize_map(map_abstraction):
     """
     map_copy = copy.deepcopy(map_abstraction)
     for edge in map_copy.abstraction_graph.edges:
-        edge_label = map_copy.abstraction_graph.get_edge_label(edge)
-        if edge_label["type"] == "inter":
+        if map_copy.is_edge_type(edge, 'inter'):
             if random.random() < -0.01:  # TODO: Make this a PARAMETER
-                old_label = map_copy.abstraction_graph.get_edge_label(edge)
-                old_label["cost"] = float('inf')
-                map_copy.abstraction_graph.update_edge_label(edge, old_label)
+                map_copy.close_edge(edge)
     return map_copy
 
 
