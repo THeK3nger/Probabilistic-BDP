@@ -96,6 +96,9 @@ class HierarchicalMap(object):
         """
         return self.abstraction_graph.edges
 
+    def is_node(self, node):
+        return node in self.abstraction_graph.vertices
+
     ## ABSTRACTION GENERATION ##
 
     def generate_abstract_graph(self):
@@ -283,3 +286,69 @@ class ExtendedAbstraction(object):
 
     def _is_node(self, node):
         return node in self.extended_graph.vertices
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+from pylab import savefig
+
+
+class PlotMap(object):
+    """
+    Plots the hierarchical map using Matplotlib.
+    """
+
+    CRed = [1.0, 0.0, 0.0]
+    CWhite = [1.0, 1.0, 1.0]
+    CBlack = [0.0, 0.0, 0.0]
+
+    def __init__(self, map_abstraction):
+        """
+
+        :param map_abstraction: A reference to the abstracted map you want to plot.
+        :return:
+        """
+        self.map_abstraction = map_abstraction
+        self.image_array = None
+        self.generate_image_array()
+
+    def generate_image_array(self):
+        """
+        Generate an image of the map.
+        :return:
+        """
+        img_width = self.map_abstraction.original_map.width
+        img_height = self.map_abstraction.original_map.height
+        self.image_array = np.array([[self.pick_color(r, c) for c in range(img_width)] for r in range(img_height)])
+        return self.image_array
+
+    def pick_color(self, r, c):
+        """
+        Select a color for the image according to the value of the tile in te map.
+        :param r: The row.
+        :param c: The column.
+        :return:
+        """
+        tile = self.map_abstraction.original_map.is_traversable((r, c))
+        if self.map_abstraction.is_node((r, c)):
+            return self.CRed
+        return self.CWhite if tile else self.CBlack
+
+    def plot(self, save_to_png=False):
+        """
+        Plot the image
+        :return:
+        """
+        print("Plotting Image")
+        fig, ax = plt.subplots()
+        plt.imshow(self.generate_image_array(), interpolation="nearest")
+        ax.autoscale(False)
+        self._plot_edges()
+        if save_to_png:
+            print("Saving...")
+            savefig('./test_hierarchical_map_plot.png')
+
+    def _plot_edges(self):
+        for edge in self.map_abstraction.edges:
+            ((x1, y1), (x2, y2)) = edge
+            plt.plot([x1, x2], [y1, y2])

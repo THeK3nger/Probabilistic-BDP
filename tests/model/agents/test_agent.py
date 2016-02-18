@@ -4,12 +4,14 @@ from pbdp.model.hierarchical_map import HierarchicalMap
 from pbdp.model.map import LogicalMap, distance_euclidean
 from pbdp.model.agents.agent import VirtualAgent
 from pbdp.mcts.optimistic_policy import OptimisticPolicy
+import pbdp.benchmark as benchmark
 
 
 class TestAgent(TestCase):
 
     def setUp(self):
-        self.base = HierarchicalMap(LogicalMap("./maps/arena.map"), 0.2)
+        self.raw_base_map = LogicalMap("./maps/arena.map")
+        self.base = HierarchicalMap(self.raw_base_map, 0.2)
         self.base.generate_abstract_graph()
         # Build a simple OptimisticPolicy function.
         self.policy_function = lambda x, y, z, w: OptimisticPolicy.search_path(x, y, z, w, 0.2)
@@ -39,3 +41,13 @@ class TestAgent(TestCase):
         while not self.virtual_agent.execute_step():
             pass
         self.assertNotEqual(self.virtual_agent.position, self.virtual_agent.history[0])
+
+    # def test_navigation(self):
+    #     copymap = benchmark.randomize_map(self.base)
+    #     start, end = benchmark.random_path(self.raw_base_map, copymap)
+    #     v_agent = VirtualAgent(self.base, start, end, self.policy_function)
+    #     limit = 200
+    #     while not v_agent.satisfied() and limit > 0:
+    #         v_agent.execute_step()
+    #         limit -= 1
+    #     self.assertEqual(v_agent.position, v_agent.target)

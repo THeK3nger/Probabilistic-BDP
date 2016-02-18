@@ -9,4 +9,8 @@ setup(
     author='Davide Aversa',
     description='Test suite for Continuous BDP',
     test_suite='nose.collector',
+    requires=[
+        "numpy",
+        "matplotlib"
+    ]
 )
