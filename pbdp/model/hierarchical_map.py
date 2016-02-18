@@ -290,7 +290,6 @@ class ExtendedAbstraction(object):
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-from pylab import savefig
 
 
 class PlotMap(object):
@@ -346,7 +345,7 @@ class PlotMap(object):
         self._plot_edges()
         if save_to_png:
             print("Saving...")
-            savefig('./test_hierarchical_map_plot.png')
+            fig.savefig('./test_hierarchical_map_plot.png')
 
     def _plot_edges(self):
         for edge in self.map_abstraction.edges:
