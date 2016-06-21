@@ -9,3 +9,5 @@ PythonApplication1.*
 
 *.csv
 *.png
+
+*-info/
