@@ -1,3 +1,5 @@
+import sys
+
 import pbdp.benchmark as benchmark
 from pbdp.model.hierarchical_map import HierarchicalMap
 from pbdp.model.agents.beliefs import AgentBeliefsModel
@@ -28,7 +30,13 @@ def run_optimistic_policy_benchmark(maps, threshold):
             print(virtual_agent.profile_data)
             # SAVE BENCHMARK DATA IN A CSV FILE
 
+def main(args=None):
+    """The main routine."""
+    if args is None:
+        args = sys.argv[1:]
+
+    run_optimistic_policy_benchmark(benchmark.maps_loader(), [0.2, 0.3, 0.4])
 
 if __name__ == '__main__':
     # Load All Maps in Folder
-    run_optimistic_policy_benchmark(benchmark.maps_loader(), [0.2, 0.3, 0.4])
+    main()

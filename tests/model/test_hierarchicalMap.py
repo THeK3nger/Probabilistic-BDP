@@ -1,4 +1,6 @@
-from unittest import TestCase
+from unittest import TestCase, skipIf
+
+import os
 
 __author__ = 'davide'
 
@@ -50,6 +52,8 @@ class TestHierarchicalMap(TestCase):
 #     def test_image(self):
 #         self.dumpydumper.dump_image()
 
+
+@skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
 class TestPlotMap(TestCase):
 
     def setUp(self):
