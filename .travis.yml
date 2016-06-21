@@ -16,7 +16,9 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib nose python-coveralls nose-cov
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib nose 
+  - pip install python-coveralls
+  - pip install nose-cov
   - source activate test-environment
 script:
 - nosetests --with-coverage
