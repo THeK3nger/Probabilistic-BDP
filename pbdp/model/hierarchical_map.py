@@ -27,13 +27,16 @@ class HierarchicalMap(object):
         self.cluster_size = int(math.ceil(original_map.width * div_amount))
         self.abstraction_graph = Graph()
 
+    def _round_to_clusters(self, value):
+        return int(math.ceil(value / float(self.cluster_size)))
+
     @property
     def cluster_width(self):
-        return int(math.ceil(self.original_map.width / float(self.cluster_size)))
+        return self._round_to_clusters(self.original_map.width)
 
     @property
     def cluster_height(self):
-        return int(math.ceil(self.original_map.height / float(self.cluster_size)))
+        return self._round_to_clusters(self.original_map.height)
 
     def is_traversable(self, edge, end=None):
         """
@@ -117,14 +120,22 @@ class HierarchicalMap(object):
         :param cluster:
         :return:
         """
-        return [x[self.ENTRANCE_POSITION][0] for x in self.vertical_entrances if
-                cluster == x[self.ENTRANCE_CLUSTERS][0]] + \
-               [x[self.ENTRANCE_POSITION][1] for x in self.vertical_entrances if
-                cluster == x[self.ENTRANCE_CLUSTERS][1]] + \
-               [x[self.ENTRANCE_POSITION][0] for x in self.horizontal_entrances if
-                cluster == x[self.ENTRANCE_CLUSTERS][0]] + \
-               [x[self.ENTRANCE_POSITION][1] for x in self.horizontal_entrances if
-                cluster == x[self.ENTRANCE_CLUSTERS][1]]
+
+        def get_from_vector(vec):
+            result = []
+            for entrances in vec:
+                x_position = entrances[self.ENTRANCE_POSITION]
+                x_clusters = entrances[self.ENTRANCE_CLUSTERS]
+                if cluster == x_clusters[0]:
+                    result.append(x_position[0])
+                if cluster == x_clusters[1]:
+                    result.append(x_position[1])
+            return result
+
+        vertical_pos = get_from_vector(self.vertical_entrances)
+        horizontal_pos = get_from_vector(self.horizontal_entrances)
+        return vertical_pos + horizontal_pos
+
 
     def get_tile_cluster(self, coord):
         """
@@ -144,10 +155,7 @@ class HierarchicalMap(object):
         :type second (Int, Int)
         :return:
         """
-        if first[1] == second[1] - 1:  # first is before second
-            cluster_col = second[1] * self.cluster_size - 1
-        else:
-            cluster_col = first[1] * self.cluster_size - 1
+        cluster_col = self.first_or_second(first, second, 1)
         cluster_row_start = first[0] * self.cluster_size
         cluster_row_end = min(self.original_map.height - 1, (first[0] + 1) * self.cluster_size)
         cluster_row_current = cluster_row_start
@@ -170,6 +178,20 @@ class HierarchicalMap(object):
             self.vertical_entrances.append(
                 (((middle_row_node, cluster_col), (middle_row_node, cluster_col + 1)), (first, second)))
 
+    def first_or_second(self, first, second, position):
+        """
+        Decide which come frst in the map between `first` and `second`.
+        :param first:
+        :param second:
+        :param position: 0 for working by rows, 1 for working by columns.
+        :return:
+        """
+        if first[position] == second[position] - 1:  # first is before second
+            cluster_pos = second[position] * self.cluster_size - 1
+        else:
+            cluster_pos = first[position] * self.cluster_size - 1
+        return cluster_pos
+
     def find_horizontal_entrances(self, first, second):
         """
         Cluster are expressed as (i,j) where i is the row and j is the column.
@@ -177,10 +199,7 @@ class HierarchicalMap(object):
         :param second:
         :return:
         """
-        if first[0] == second[0] - 1:  # ClusterA is before ClusterB
-            cluster_row = second[0] * self.cluster_size - 1
-        else:
-            cluster_row = first[0] * self.cluster_size - 1
+        cluster_row = self.first_or_second(first,second, 0)
         cluster_col_start = first[1] * self.cluster_size
         cluster_col_end = min(self.original_map.width - 1, (first[1] + 1) * self.cluster_size)
         cluster_col_current = cluster_col_start
@@ -208,9 +227,7 @@ class HierarchicalMap(object):
                self.original_map.is_traversable(right_tile)
 
     def __connect_inter_nodes(self):
-        for e in self.vertical_entrances:
-            self.abstraction_graph.add_edge(e[0][0], e[0][1], meta={"type": "inter", "cost": 1})
-        for e in self.horizontal_entrances:
+        for e in itertools.chain(self.vertical_entrances, self.horizontal_entrances):
             self.abstraction_graph.add_edge(e[0][0], e[0][1], meta={"type": "inter", "cost": 1})
 
     def __connect_intra_nodes(self):
