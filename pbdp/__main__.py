@@ -1,5 +1,7 @@
 import sys
 
+import yoshix.run_yoshi
+
 import pbdp.benchmark as benchmark
 from pbdp.model.hierarchical_map import HierarchicalMap
 from pbdp.model.agents.beliefs import AgentBeliefsModel
@@ -35,7 +37,8 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    run_optimistic_policy_benchmark(benchmark.maps_loader(), [0.2, 0.3, 0.4])
+    yoshix.run_yoshi.main(["./pbdp/experiments"])
+    #run_optimistic_policy_benchmark(benchmark.maps_loader(), [0.2, 0.3, 0.4])
 
 if __name__ == '__main__':
     # Load All Maps in Folder
