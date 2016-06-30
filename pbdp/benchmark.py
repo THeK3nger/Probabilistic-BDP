@@ -47,7 +47,7 @@ def random_free_cell(map):
     count = 1
     probability = 1
     chosen = None
-    for r, c in itertools.product(range(map.width), range(map.height)):
+    for r, c in itertools.product(range(map.height), range(map.width)):
         if map.is_traversable((r, c)):
             if random.random() < probability:
                 chosen = (r, c)
