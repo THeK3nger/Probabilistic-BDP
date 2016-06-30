@@ -19,25 +19,3 @@ class TestBenchmarkTools(TestCase):
         for _ in range(100):
             random_cell = benchmark.random_free_cell(map)
             self.assertTrue(map.is_traversable(random_cell))
-
-
-class TestCSVDatabase(TestCase):
-
-    def setUp(self):
-        self.database = benchmark.CSVDatabase()
-        self.handler = self.database.add_file("test.csv", ('TestFieldA', 'TestFieldB', 'TestFieldC'))
-        self.handler.add_record((1, 2, 3))
-        self.handler.add_record((4, 5, 6))
-
-    def test_add_file(self):
-        self.database.add_file("newfile.csv", ('A', 'B'))
-        self.assertTrue("newfile.csv" in self.database.records.keys())
-
-    def test_insertion(self):
-        self.assertTrue(len(self.handler.query_rows()) == 2)
-        tfa = self.handler.query_column('TestFieldA')
-        self.assertTupleEqual(tfa, (1, 4))
-
-    def test_writing(self):
-        # TODO: For now, correctness of the output is verified manually.
-        self.database.write_all()
