@@ -9,10 +9,9 @@ from pbdp.model.agents.agent import VirtualAgent
 class OptimisticPolicyBaseExperiment(YoshiExperiment):
 
     def setup(self):
-        self.setup_egg(("Map", "Start", "End", "ExpandedNodes"))
+        self.setup_egg(("Map", "PathNum", "StartX", "StartY", "EndX", "EndY", "ExpandedNodes"))
         self.assign_generators("Map", benchmark.maps_loader().items())
-        self.assign_generators("Start", range(1, 10))
-        self.assign_generators("End", range(1,4))
+        self.assign_generators("PathNum", range(0,30)) # TODO: 30 is the number of path per map.
         self.assign_transformer("Map", lambda x: x[0])
 
     def single_run(self, params):
@@ -23,6 +22,10 @@ class OptimisticPolicyBaseExperiment(YoshiExperiment):
         copymap = benchmark.randomize_map(map_abstraction)
         start, end = benchmark.random_path(params["Map"][1], copymap)
         virtual_agent = VirtualAgent(copymap, start, end, policy_function)
+        self.partial_egg["StartX"] = start[0]
+        self.partial_egg["StartY"] = start[1]
+        self.partial_egg["EndX"] = end[0]
+        self.partial_egg["EndY"] = end[1]
         self.partial_egg["ExpandedNodes"] = virtual_agent.profile_data["expanded"]
 
     def after_run(self):
