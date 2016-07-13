@@ -18,3 +18,6 @@ class TestExtendedAbstraction(TestCase):
     def test_cost(self):
         self.assertEqual(self.abstraction.cost((5, 5), (7, 7)), float('inf'))
         self.assertEqual(self.abstraction.cost((5, 5), (5, 9)), 4)
+
+    def test_is_traversable(self):
+        self.assertTrue(self.abstraction.is_traversable((40,44),(40,40)))

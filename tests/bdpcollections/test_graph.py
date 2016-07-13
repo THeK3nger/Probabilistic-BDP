@@ -78,3 +78,7 @@ class TestExtensionGraph(TestCase):
         self.assertEqual("Cane", self.test_graph.get_edge_label(("A",1)))
         self.assertEqual("Pizza", self.test_graph.get_edge_label((2,"A")))
 
+    def test_is_adjacent(self):
+        self.assertTrue(self.test_graph.is_adjacent("A", 2))
+        self.assertTrue(self.test_graph.is_adjacent("B", 4))
+

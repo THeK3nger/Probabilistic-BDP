@@ -36,6 +36,8 @@ class TestHierarchicalMap(TestCase):
     def test_is_traversable(self):
         self.abstraction.generate_abstract_graph()
         self.assertTrue(self.abstraction.is_traversable((9,5),(5,9)))
+        self.abstraction.close_edge(((9,5),(5,9)))
+        self.assertFalse(self.abstraction.is_traversable((9,5),(5,9)))
 
     def test_is_node(self):
         self.assertTrue(self.abstraction.is_node((9, 5)))
