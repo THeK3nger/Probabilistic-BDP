@@ -76,3 +76,6 @@ class AgentBeliefsModel(object):
 
     def __contains__(self, item):
         return item in self._beliefs.keys()
+
+    def raw_string(self):
+        return self._beliefs.__str__()

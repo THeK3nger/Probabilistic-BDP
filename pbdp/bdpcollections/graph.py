@@ -182,4 +182,4 @@ class ExtendedGraph(object):
             return original_neighbours
 
     def is_adjacent(self, node_a, node_b):
-        return (node_a, node_b) in self.edges
+        return (node_a, node_b) in self.edges or (node_b, node_a) in self.edges

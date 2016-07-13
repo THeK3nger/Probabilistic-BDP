@@ -21,7 +21,9 @@ class OptimisticPolicyBaseExperiment(YoshiExperiment):
         map_abstraction.generate_abstract_graph()
         copymap = benchmark.randomize_map(map_abstraction)
         start, end = benchmark.random_path(params["Map"][1], copymap)
+        print("From {} to {}".format(start, end))
         virtual_agent = VirtualAgent(copymap, start, end, policy_function)
+        virtual_agent.reach_destination()
         self.partial_egg["StartX"] = start[0]
         self.partial_egg["StartY"] = start[1]
         self.partial_egg["EndX"] = end[0]

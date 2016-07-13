@@ -95,8 +95,14 @@ class VirtualAgent(object):
             self.update_beliefs()  # TODO: For now, we force update after every step.
             return True
         else:
+            print('Path Blocked from {} to {}'.format(self.position, action))
             self.update_beliefs()
             return False
+
+    def reach_destination(self):
+        while self.position != self.target:
+            #print("Current Position {}".format(self.position))
+            self.execute_step()
 
 
 
